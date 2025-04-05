@@ -2,13 +2,13 @@
   "name": "monitoring-langfuse",
   "version": "0.0.1",
   "main": "server.js",
-  "scripts": {  
+  "scripts": {
     "dev": "node --watch --env-file=.env src/server.js",
     "start": "node src/server.js"
   },
   "keywords": [],
   "author": "erickwendel",
-  "license": "ISC",
+  "license": "MIT",
   "description": "",
   "dependencies": {
     "fastify": "^5.2.2",
