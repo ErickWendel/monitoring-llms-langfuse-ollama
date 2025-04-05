@@ -1,3 +1,8 @@
 source .env
 
-rsync -av --exclude='node_modules' --exclude='.git' ./ root@$DOMAIN:/root/infra
+rsync -av \
+--exclude='node_modules' \
+--exclude='.git' \
+--exclude='*-data' \
+--exclude='letsencrypt' \
+./ root@$DOMAIN:/root/infra

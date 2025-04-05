@@ -4,20 +4,33 @@
 # All other components are bound to localhost (127.0.0.1) to only accept connections from the local machine.
 # External connections from other machines will not be able to reach these services directly.
 services:
-  traefik:
-    image: "traefik:v3.2"
-    container_name: "traefik"
-    command:
-      - "--configfile=/etc/traefik/traefik.yml"
-    ports:
-      - "443:443"
-      - "8080:8080"
-      - "80:80"
-    volumes:
-      - "./letsencrypt:/letsencrypt"
-      - "./traefik.yml:/etc/traefik/traefik.yml:ro"
-      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+  
+  # api:
+  #   build: ./app
+  #   env_file:
+  #     ./app/.env
+   
+  #   volumes:
+  #     - ./app/node_modules:/app/node_modules
+  #     - ./app:/app
+  #   ports:
+  #     - 9000:9000
+  #   environment:
+  #     - DEPLOY_ENV=dev
+  #     - OTEL_EXPORTER_OTLP_ENDPOINT=opentelemetry-collector:4317
+  #     - OTEL_SERVICE_NAME=students-api
+  #     - APP_PORT=9000
+  #   labels:
+  #     - "traefik.enable=true"
+  #     - "traefik.http.routers.api.rule=Host(`${DOMAIN}`) && (PathPrefix(`//api/`) || PathPrefix(`/api`))"
 
+  #     - "traefik.http.middlewares.api-strip.stripprefix.prefixes=/api"
+  #     - "traefik.http.middlewares.api-strip.stripprefix.forceslash=false" 
+  #     - "traefik.http.routers.api.middlewares=api-strip@docker"
+  #     - "traefik.http.routers.api.entrypoints=websecure"
+  #     - "traefik.http.routers.api.tls.certresolver=myresolver"
+  #     - "traefik.http.services.api.loadbalancer.server.port=9000"
+      
   ollama:
     image: ollama/ollama
     container_name: ollama
@@ -30,17 +43,7 @@ services:
     ports:
       - "11434:11434"
       # - "80:11434"
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.ollama.rule=Host(`${DOMAIN}`) && (PathPrefix(`//ollama/`) || PathPrefix(`/ollama`))"
-
-      - "traefik.http.middlewares.ollama-strip.stripprefix.prefixes=/ollama"
-      - "traefik.http.middlewares.ollama-strip.stripprefix.forceslash=false"
-      - "traefik.http.routers.ollama.middlewares=ollama-strip@docker"
-
-      - "traefik.http.routers.ollama.entrypoints=websecure"
-      - "traefik.http.routers.ollama.tls.certresolver=myresolver"
-      - "traefik.http.services.ollama.loadbalancer.server.port=11434"   
+   
 
   ollama-model-loader:
     image: docker:latest  # 🔥 Uses Docker CLI instead of Ollama
@@ -129,7 +132,7 @@ services:
       - 3000:3000
     environment:
       <<: *langfuse-worker-env
-      NEXTAUTH_URL: http://localhost:3000
+      NEXTAUTH_URL: ${NEXTAUTH_URL:-http://localhost:3000}
       NEXTAUTH_SECRET: mysecret # CHANGEME
       LANGFUSE_INIT_ORG_ID: ${LANGFUSE_INIT_ORG_ID:-}
       LANGFUSE_INIT_ORG_NAME: ${LANGFUSE_INIT_ORG_NAME:-}
@@ -213,8 +216,6 @@ services:
       - 127.0.0.1:5432:5432
     volumes:
       - langfuse_postgres_data:/var/lib/postgresql/data
-
-
 
 volumes:
   langfuse_postgres_data:

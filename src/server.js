@@ -1,3 +1,9 @@
+Object.keys(process.env).forEach(key => {
+  if (!process.env[key].includes('${DOMAIN}')) return
+  
+  process.env[key] = process.env[key].replace('${DOMAIN}', process.env.DOMAIN)
+});
+
 import OpenAI from 'openai';
 import { createLRU } from 'lru.min';
 import { observeOpenAI, Langfuse } from 'langfuse';
@@ -14,15 +20,14 @@ const lru = createLRU({
   },
 });
 
+
+
 const openAIData = {
-  model: process.env.OPENROUTER_MODEL,
-  baseURL: process.env.OPENROUTER_SITE_URL,
-  apiKey: process.env.OPENROUTER_API_KEY,
-  defaultHeaders: {
-    'HTTP-Referer': process.env.OPENROUTER_SITE_URL, // Optional. Site URL for rankings on openrouter.ai.
-    'X-Title': process.env.OPENROUTER_SITE_NAME, // Optional. Site title for rankings on openrouter.ai.
-  },
+  model: process.env.OPENAI_MODEL,
+  baseURL: process.env.OPENAI_SITE_URL,
+  apiKey: process.env.OPENAI_API_KEY,
 }
+
 
 const langfuse = new Langfuse()
 const span = langfuse.trace({ name: 'ewacademy-openai' })
@@ -30,6 +35,11 @@ const openai = observeOpenAI(new OpenAI(openAIData), {
   parent: span
 });
 
+console.log('Starting prompt');
+for await (const chunk of prompt('tell me a joke')) {
+  console.log(chunk);
+}
+console.log('Prompt done');
 
 async function* prompt(content) {
   const completion = await openai.chat.completions.create({
