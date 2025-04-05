@@ -1,0 +1,23 @@
+{
+  "name": "monitoring-langfuse",
+  "version": "0.0.1",
+  "main": "server.js",
+  "scripts": {  
+    "dev": "node --watch --env-file=.env src/server.js",
+    "start": "node src/server.js"
+  },
+  "keywords": [],
+  "author": "erickwendel",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "fastify": "^5.2.2",
+    "langfuse": "^3.37.1",
+    "lru.min": "^1.1.2",
+    "openai": "^4.91.1"
+  },
+  "engines": {
+    "node": "v23.9.0"
+  },
+  "type": "module"
+}

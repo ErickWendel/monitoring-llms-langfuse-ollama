@@ -1,0 +1,5 @@
+
+https://opentelemetry.io/docs/specs/semconv/gen-ai/
+https://langfuse.com/self-hosting/docker-compose
+https://www.npmjs.com/package/lru.min/v/0.3.1
+https://langfuse.com/docs/tracing
